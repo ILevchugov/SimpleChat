@@ -75,6 +75,7 @@ public class ChatSwingView implements ChatView{
             }
         });
 
+        chatText.setLineWrap(true);
         chatText.setFont(chatText.getFont().deriveFont(14f));
         chatText.setEditable(false);
         chatTextScrollPane.setViewportView(chatText);
