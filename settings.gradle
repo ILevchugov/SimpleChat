@@ -1,0 +1,5 @@
+rootProject.name = 'HomeProjectChat'
+include 'client'
+include 'common'
+include 'server'
+
