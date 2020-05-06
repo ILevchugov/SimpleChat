@@ -136,6 +136,7 @@ public class ChatSwingView implements ChatView{
     @Override
     public void showNewMessage(String message) {
         chatText.append(message + System.lineSeparator());
+        chatText.setCaretPosition(chatText.getDocument().getLength());
     }
 
     @Override
