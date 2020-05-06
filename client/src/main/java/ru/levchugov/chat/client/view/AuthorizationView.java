@@ -54,7 +54,11 @@ public class AuthorizationView {
     private void setButtonListener() {
         authorizationButton.addActionListener(actionEvent -> {
             String userName = nameText.getText();
-            chatController.authorize(userName);
+            if (userName.contains(" ") || userName.isEmpty()) {
+                showErrorMessage("Name can't contains ' '");
+            } else {
+                chatController.authorize(userName);
+            }
         });
     }
 

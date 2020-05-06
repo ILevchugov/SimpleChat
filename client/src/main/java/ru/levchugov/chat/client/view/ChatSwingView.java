@@ -3,6 +3,7 @@ package ru.levchugov.chat.client.view;
 import ru.levchugov.chat.client.controller.ChatController;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -80,6 +81,8 @@ public class ChatSwingView implements ChatView{
         chatText.setEditable(false);
         chatTextScrollPane.setViewportView(chatText);
         usersPane.setViewportView(usersList);
+        DefaultCaret caret = (DefaultCaret)chatText.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         initBar();
 
 
@@ -123,8 +126,10 @@ public class ChatSwingView implements ChatView{
     private void setButtonListener() {
         sendMessageButton.addActionListener(actionEvent -> {
             String text = sendMessageTextField.getText();
-            chatController.sendChatMessage(text);
-            sendMessageTextField.setText("");
+            if (!text.isEmpty() && text.length() < 240) {
+                chatController.sendChatMessage(text);
+                sendMessageTextField.setText("");
+            }
         });
     }
 
