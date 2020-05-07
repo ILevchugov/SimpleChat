@@ -11,6 +11,7 @@ public class EscapeKeyListenerForDisconnect extends KeyAdapter {
     EscapeKeyListenerForDisconnect(ChatController chatController) {
         this.chatController = chatController;
     }
+
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {

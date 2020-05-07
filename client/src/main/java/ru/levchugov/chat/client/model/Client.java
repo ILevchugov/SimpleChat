@@ -97,11 +97,12 @@ public class Client {
         disconnect();
     }
 
-    private void disconnect() {
+    public void disconnect() {
         log.info("Закрываю поток слушателя сервера");
 
         serverHandler.closeStreams();
         serverHandlerThread.interrupt();
+
         log.debug("Слушатель закрыт? {}", serverHandlerThread.isInterrupted());
         log.info("Закрыл поток слушателя сервера");
 

@@ -83,11 +83,11 @@ public class ClientHandler implements Runnable {
     }
 
     void sendUsersSetToNewUser() {
-        log.info("отправляю спииок бзеров новому пользователю");
+        log.info("Отправка списка юзеров");
         Set<String> users = server.getUsersSet();
         users.remove(userName);
         for(String name: users) {
-            log.debug("отправляю юзеру {} юзера {}", userName, name);
+            log.debug("Отправляю юзеру {} юзера {}", userName, name);
             Message message = new Message(name, MessageType.OLD_USER);
             sendMessage(message);
         }

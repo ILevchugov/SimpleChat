@@ -1,10 +1,9 @@
 task fatJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'СhatClient',
-                'Implementation-Version': version,
                 'Main-Class': 'ru.levchugov.chat.client.ClientRunner'
     }
-    baseName = project.name + '-all'
+    baseName = "client"
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }

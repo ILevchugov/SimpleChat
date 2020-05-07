@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class ChatSwingView implements ChatView{
+public class ChatSwingView implements ChatView {
     private static final int CHAT_SCROLL_PANE_WIDTH = 400;
     private static final int CHAT_SCROLL_PANE_HEIGHT = 600;
 
@@ -20,6 +20,8 @@ public class ChatSwingView implements ChatView{
 
     private static final int SEND_MESSAGE_BUTTON_WIDTH = 100;
     private static final int SEND_MESSAGE_BUTTON_HEIGHT = 20;
+
+    private static final int CHAT_MESSAGE_LIMIT = 57;
 
     private final JFrame mainFrame;
     private final JMenuBar menuBar;
@@ -34,7 +36,7 @@ public class ChatSwingView implements ChatView{
     private final JButton sendMessageButton;
     private final JTextField sendMessageTextField;
 
-    private final  GridBagConstraints constraints;
+    private final GridBagConstraints constraints;
 
     private final ChatController chatController;
 
@@ -50,7 +52,7 @@ public class ChatSwingView implements ChatView{
         this.chatTextScrollPane = new JScrollPane();
         this.chatText = new JTextArea();
         this.sendMessageButton = new JButton("send");
-        this.sendMessageTextField= new JTextField();
+        this.sendMessageTextField = new JTextField();
 
         this.constraints = new GridBagConstraints();
 
@@ -62,7 +64,6 @@ public class ChatSwingView implements ChatView{
 
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
-        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setResizable(false);
     }
 
@@ -81,7 +82,7 @@ public class ChatSwingView implements ChatView{
         chatText.setEditable(false);
         chatTextScrollPane.setViewportView(chatText);
         usersPane.setViewportView(usersList);
-        DefaultCaret caret = (DefaultCaret)chatText.getCaret();
+        DefaultCaret caret = (DefaultCaret) chatText.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         initBar();
 
@@ -97,7 +98,7 @@ public class ChatSwingView implements ChatView{
         usersPane.setPreferredSize(new Dimension(USERS_PANE_WIDTH, USERS_SCROLL_PANE_HEIGHT));
         setGridItem(usersPane, 1, 0);
 
-
+        sendMessageTextField.setDocument(new TextFieldLimit(CHAT_MESSAGE_LIMIT));
         sendMessageTextField.setPreferredSize(new Dimension(SEND_MESSAGE_TEXT_AREA_WIDTH, SEND_MESSAGE_TEXT_AREA_HEIGHT));
         sendMessageTextField.addKeyListener(new EnterKeyListenerForClickButton(sendMessageButton));
         sendMessageTextField.addKeyListener(new EscapeKeyListenerForDisconnect(chatController));
@@ -117,6 +118,7 @@ public class ChatSwingView implements ChatView{
         menuBar.add(chatMenu);
 
     }
+
     private void setGridItem(Component component, int horizontalPositionOrder, int verticalPositionOrder) {
         constraints.gridx = horizontalPositionOrder;
         constraints.gridy = verticalPositionOrder;
@@ -126,10 +128,9 @@ public class ChatSwingView implements ChatView{
     private void setButtonListener() {
         sendMessageButton.addActionListener(actionEvent -> {
             String text = sendMessageTextField.getText();
-            if (!text.isEmpty() && text.length() < 240) {
-                chatController.sendChatMessage(text);
-                sendMessageTextField.setText("");
-            }
+            chatController.sendChatMessage(text);
+            sendMessageTextField.setText("");
+
         });
     }
 
@@ -168,7 +169,6 @@ public class ChatSwingView implements ChatView{
         connectionView.setVisible(true);
     }
 
-    //названия кал
     @Override
     public void showAuthorizationViewOnly() {
         mainFrame.setVisible(false);
@@ -189,7 +189,9 @@ public class ChatSwingView implements ChatView{
     }
 
     @Override
-    public void showConnectionOverflowError() {connectionView.showErrorMessage("Server is full");}
+    public void showConnectionOverflowError() {
+        connectionView.showErrorMessage("Server is full");
+    }
 
     @Override
     public void showAuthorizationError() {

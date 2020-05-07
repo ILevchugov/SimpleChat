@@ -4,10 +4,20 @@ import ru.levchugov.chat.client.controller.ChatController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class AuthorizationView {
-    private static final int FRAME_WIDTH = 250;
+    private static final int FRAME_WIDTH = 300;
     private static final int FRAME_HEIGHT = 150;
+
+    private static final int TEXT_FIELD_WIDTH = 150;
+    private static final int TEXT_FIELD_HEIGHT = 20;
+
+    private static final int MIN_NAME_SIZE = 3;
+    private static final int MAX_NAME_SIZE = 20;
+
+    private static final String USER_NAME_PATTERN = "^[A-Za-z0-9_-]{3,20}$";
 
     private final JFrame authorizationFrame;
 
@@ -20,7 +30,7 @@ public class AuthorizationView {
     private final ChatController chatController;
 
     AuthorizationView(ChatController chatController) {
-        this.authorizationFrame = new JFrame();
+        this.authorizationFrame = new JFrame("Enter name");
         this.nameLabel = new JLabel("Your name");
         this.nameText = new JTextField();
         this.authorizationButton = new JButton("login");
@@ -33,11 +43,17 @@ public class AuthorizationView {
         authorizationFrame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
         authorizationFrame.setResizable(false);
         authorizationFrame.setLocationRelativeTo(null);
-
-        authorizationFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     private void init() {
+        authorizationFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                chatController.disconnect();
+                authorizationFrame.dispose();
+                System.exit(0);
+            }
+        });
         authorizationFrame.setLayout(new GridBagLayout());
         constraints.fill = GridBagConstraints.HORIZONTAL;
 
@@ -45,6 +61,8 @@ public class AuthorizationView {
 
         setGridItem(nameText, 1, 0);
 
+        nameText.setDocument(new TextFieldLimit(MAX_NAME_SIZE));
+        nameText.setPreferredSize(new Dimension(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT));
         nameText.addKeyListener(new EnterKeyListenerForClickButton(authorizationButton));
 
         setButtonListener();
@@ -54,10 +72,12 @@ public class AuthorizationView {
     private void setButtonListener() {
         authorizationButton.addActionListener(actionEvent -> {
             String userName = nameText.getText();
-            if (userName.contains(" ") || userName.isEmpty()) {
-                showErrorMessage("Name can't contains ' '");
-            } else {
+            if (userName.matches(USER_NAME_PATTERN)) {
                 chatController.authorize(userName);
+            } else {
+                showErrorMessage("Not valid username" + System.lineSeparator() +
+                        "the username may contain letters, numbers, hyphens, and underscores" + System.lineSeparator() +
+                        "from " + MIN_NAME_SIZE + " to " + MAX_NAME_SIZE + " symbols");
             }
         });
     }

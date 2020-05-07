@@ -16,7 +16,7 @@ public class Runner {
                 server.run();
             }
         } catch (IllegalArgumentException e) {
-            log.error("",e);
+            log.error("Неверно введены проперти ",e);
         }
     }
 }

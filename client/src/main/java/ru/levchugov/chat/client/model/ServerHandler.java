@@ -59,7 +59,7 @@ public class ServerHandler implements Runnable {
             }
         } catch (SocketException e) {
             Thread.currentThread().interrupt();
-            log.info("Сокет закрыт, прием сообщений прекращен"); //это костыль
+            log.info("Сокет закрыт, прием сообщений прекращен");
         } catch (ClassNotFoundException e) {
             log.error("Ошибка принятия сообщений от сервера", e);
         } catch (IOException e) {
@@ -87,7 +87,7 @@ public class ServerHandler implements Runnable {
     void processServerMessage(Message message) {
         ProcessingMessageStrategy processingMessageStrategy = processingMessageStrategyMap.get(message.getMessageType());
         if (processingMessageStrategy == null) {
-            log.error("Такого типа стратегии нет");
+            log.warn("Такого типа стратегии нет");
         } else {
             processingMessageStrategy.processMessage(message);
         }

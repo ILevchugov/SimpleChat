@@ -42,7 +42,7 @@ public class Server {
 
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            log.debug("Сервер запушен на {} потоках", threadsNum);
+            log.debug("Сервер запущен на {} потоках", threadsNum);
             while (!Thread.currentThread().isInterrupted()) {
                 Socket clientSocket = serverSocket.accept();
                 log.info("Установлено соеденение с клиент-сокетом {}", clientSocket.getInetAddress());
@@ -50,10 +50,10 @@ public class Server {
                     CONNECTIONS_COUNTER.getAndIncrement();
                     log.debug("Коннектов {}", CONNECTIONS_COUNTER);
                     clientsPool.submit(new ClientHandler(clientSocket, this));
-                    log.info("клиент сокет {} будет обрабатываться ", clientSocket.getInetAddress());
+                    log.info("Клиент сокет {} будет обрабатываться ", clientSocket.getInetAddress());
                 } else {
                     declineConnection(clientSocket);
-                    log.warn("Сервер переполнен в обработке сокета будет отказано");
+                    log.warn("Сервер переполнен, в обработке сокета будет отказано");
                 }
             }
         } catch (IOException e) {
